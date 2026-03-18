@@ -1,0 +1,45 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - SIMC_PATH=/usr/local/bin/simc
+      - DATABASE_URL=sqlite+aiosqlite:///./data/raidbots.db
+      - DROP_DB_ON_STARTUP=true
+    depends_on:
+      - redis
+    volumes:
+      - ./backend:/app
+      - backend-data:/app/data
+
+  worker:
+    build: ./backend
+    command: python -m arq worker.tasks.WorkerSettings
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - SIMC_PATH=/usr/local/bin/simc
+      - DATABASE_URL=sqlite+aiosqlite:///./data/raidbots.db
+    depends_on:
+      - redis
+    volumes:
+      - ./backend:/app
+      - backend-data:/app/data
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  backend-data:

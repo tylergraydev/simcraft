@@ -67,7 +67,7 @@ export default function TopGearItemSelector({
 
   const getIlevel = (di: DisplayItem) => {
     const info = di.item.item_id > 0 ? itemInfoMap[di.item.item_id] : null;
-    return info?.ilevel || di.item.ilevel || 0;
+    return di.item.ilevel || info?.ilevel || 0;
   };
 
   const visibleGroups = useMemo(() => {

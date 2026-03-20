@@ -3,19 +3,22 @@
 import { usePathname } from "next/navigation";
 
 const tabs = [
-  { href: "/", label: "Quick Sim" },
+  { href: "/quick-sim", label: "Quick Sim" },
   { href: "/top-gear", label: "Top Gear" },
 ];
 
 export default function NavTabs() {
   const pathname = usePathname();
 
+  // Don't show tabs on the landing page
+  if (pathname === "/") return null;
+
   return (
     <nav className="flex items-center gap-1 bg-surface-2 rounded-lg p-0.5 border border-border">
       {tabs.map((tab) => {
         const isActive =
-          tab.href === "/"
-            ? pathname === "/" || pathname.startsWith("/sim")
+          tab.href === "/quick-sim"
+            ? pathname.startsWith("/quick-sim") || pathname.startsWith("/sim")
             : pathname.startsWith(tab.href);
         return (
           <a

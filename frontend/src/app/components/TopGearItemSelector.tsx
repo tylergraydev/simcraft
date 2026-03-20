@@ -247,7 +247,7 @@ export default function TopGearItemSelector({
                   </div>
                   <a
                     href={di.item.item_id > 0 ? getWowheadUrl(di.item.item_id) : undefined}
-                    data-wowhead={di.item.item_id > 0 ? getWowheadData(di.item.bonus_ids, di.item.ilevel) : undefined}
+                    data-wowhead={di.item.item_id > 0 ? getWowheadData(di.item.bonus_ids, di.item.ilevel, di.item.enchant_id) : undefined}
                     className="text-[12px] truncate flex-1 no-underline"
                     style={{ color: qc }}
                     target="_blank"
@@ -256,8 +256,13 @@ export default function TopGearItemSelector({
                   >
                     {name}
                   </a>
-                  <span className="text-[10px] text-muted font-mono tabular-nums shrink-0">
-                    {(getIlevel(di) > 0) && getIlevel(di)}
+                  <span className="flex items-center gap-1.5 shrink-0">
+                    {di.item.enchant_id > 0 && (
+                      <span className="text-[9px] text-emerald-400/70">E</span>
+                    )}
+                    <span className="text-[10px] text-muted font-mono tabular-nums">
+                      {(getIlevel(di) > 0) && getIlevel(di)}
+                    </span>
                   </span>
                 </div>
               );
@@ -329,7 +334,7 @@ export default function TopGearItemSelector({
                   </div>
                   <a
                     href={di.item.item_id > 0 ? getWowheadUrl(di.item.item_id) : undefined}
-                    data-wowhead={di.item.item_id > 0 ? getWowheadData(di.item.bonus_ids, di.item.ilevel) : undefined}
+                    data-wowhead={di.item.item_id > 0 ? getWowheadData(di.item.bonus_ids, di.item.ilevel, di.item.enchant_id) : undefined}
                     className="text-[12px] truncate flex-1 no-underline"
                     style={{ color: qc }}
                     target="_blank"
@@ -338,8 +343,13 @@ export default function TopGearItemSelector({
                   >
                     {name}
                   </a>
-                  <span className="text-[10px] text-muted font-mono tabular-nums shrink-0">
-                    {(getIlevel(di) > 0) && getIlevel(di)}
+                  <span className="flex items-center gap-1.5 shrink-0">
+                    {di.item.enchant_id > 0 && (
+                      <span className="text-[9px] text-emerald-400/70">E</span>
+                    )}
+                    <span className="text-[10px] text-muted font-mono tabular-nums">
+                      {(getIlevel(di) > 0) && getIlevel(di)}
+                    </span>
                   </span>
                 </label>
               );

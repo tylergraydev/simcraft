@@ -5,6 +5,7 @@ export interface ParsedItem {
   ilevel: number;
   name: string;
   bonus_ids: number[];
+  enchant_id: number;
   is_equipped: boolean;
 }
 
@@ -43,6 +44,7 @@ function parseItemProps(itemStr: string): Omit<ParsedItem, "slot" | "is_equipped
   const nameMatch = itemStr.match(/name=([^,]+)/);
   const encMatch = itemStr.match(/^([a-z_]+),/);
   const bonusMatch = itemStr.match(/bonus_id=([0-9/:]+)/);
+  const enchantMatch = itemStr.match(/enchant_id=(\d+)/);
 
   let name = "";
   if (nameMatch) {
@@ -61,6 +63,7 @@ function parseItemProps(itemStr: string): Omit<ParsedItem, "slot" | "is_equipped
     ilevel: ilvlMatch ? parseInt(ilvlMatch[1]) : 0,
     name,
     bonus_ids,
+    enchant_id: enchantMatch ? parseInt(enchantMatch[1]) : 0,
   };
 }
 

@@ -12,6 +12,7 @@ interface ResultItem {
   ilevel: number;
   name: string;
   bonus_ids?: number[];
+  enchant_id?: number;
   is_kept?: boolean;
 }
 
@@ -202,7 +203,7 @@ function ItemTag({ item, info }: { item: ResultItem; info?: ItemInfo }) {
   const name = info?.name || item.name || `Item ${item.item_id}`;
   const icon = info?.icon || "inv_misc_questionmark";
   const kept = item.is_kept;
-  const whData = item.item_id > 0 ? getWowheadData(item.bonus_ids, item.ilevel) : undefined;
+  const whData = item.item_id > 0 ? getWowheadData(item.bonus_ids, item.ilevel, item.enchant_id) : undefined;
 
   return (
     <div
@@ -241,7 +242,7 @@ function ItemChip({ item, info }: { item: ResultItem; info?: ItemInfo }) {
   const name = info?.name || item.name || `Item ${item.item_id}`;
   const icon = info?.icon || "inv_misc_questionmark";
   const kept = item.is_kept;
-  const whData = item.item_id > 0 ? getWowheadData(item.bonus_ids, item.ilevel) : undefined;
+  const whData = item.item_id > 0 ? getWowheadData(item.bonus_ids, item.ilevel, item.enchant_id) : undefined;
 
   return (
     <div

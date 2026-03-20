@@ -111,13 +111,16 @@ export function getWowheadUrl(itemId: number): string {
   return `https://www.wowhead.com/item=${itemId}`;
 }
 
-export function getWowheadData(bonusIds?: number[], ilevel?: number): string {
+export function getWowheadData(bonusIds?: number[], ilevel?: number, enchantId?: number): string {
   const parts: string[] = [];
   if (bonusIds && bonusIds.length > 0) {
     parts.push(`bonus=${bonusIds.join(":")}`);
   }
   if (ilevel && ilevel > 0) {
     parts.push(`ilvl=${ilevel}`);
+  }
+  if (enchantId && enchantId > 0) {
+    parts.push(`ench=${enchantId}`);
   }
   return parts.join("&");
 }

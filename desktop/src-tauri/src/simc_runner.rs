@@ -2,6 +2,7 @@ use regex::Regex;
 use serde_json::Value;
 use std::path::Path;
 use tempfile::TempDir;
+use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::Command;
 
 const SIMC_TIMEOUT_SECS: u64 = 600;
@@ -56,6 +57,9 @@ const STAGES: &[Stage] = &[
 
 const STAGED_THRESHOLD: usize = 10;
 
+/// Run simc as a subprocess, streaming stderr for real-time profileset progress.
+/// `on_profileset_progress(current, total)` is called whenever simc reports
+/// completing a profileset (e.g. "3/7").
 async fn run_simc_subprocess(
     simc_path: &Path,
     job_id: &str,
@@ -65,6 +69,7 @@ async fn run_simc_subprocess(
     iterations: u32,
     calculate_scale_factors: bool,
     stage_name: &str,
+    on_profileset_progress: impl Fn(usize, usize),
 ) -> Result<Value, String> {
     let suffix = if stage_name.is_empty() {
         String::new()
@@ -81,7 +86,25 @@ async fn run_simc_subprocess(
     std::fs::write(&input_file, simc_input)
         .map_err(|e| format!("Failed to write input file: {}", e))?;
 
+    if !simc_path.exists() {
+        return Err(format!("simc binary not found at: {}", simc_path.display()));
+    }
+
+    // On Windows, remove the Zone.Identifier ADS that marks files as "downloaded
+    // from the internet". Without this, Windows may block programmatic execution
+    // with "Access is denied" even though the file runs fine from a terminal.
+    #[cfg(windows)]
+    {
+        let zone_id = format!("{}:Zone.Identifier", simc_path.display());
+        let _ = std::fs::remove_file(&zone_id);
+    }
+
     let mut cmd = Command::new(simc_path);
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        cmd.creation_flags(0x08000000); // CREATE_NO_WINDOW
+    }
     cmd.arg(input_file.to_str().unwrap_or(""))
         .arg(format!("json2={}", output_file.display()))
         .arg(format!("iterations={}", iterations))
@@ -103,27 +126,88 @@ async fn run_simc_subprocess(
         cmd.arg(*opt);
     }
 
-    let output = tokio::time::timeout(
-        std::time::Duration::from_secs(SIMC_TIMEOUT_SECS),
-        cmd.output(),
-    )
-    .await
-    .map_err(|_| format!("simc timed out after {}s", SIMC_TIMEOUT_SECS))?
-    .map_err(|e| format!("Failed to run simc: {}", e))?;
+    cmd.stdout(std::process::Stdio::piped());
+    cmd.stderr(std::process::Stdio::piped());
 
-    if !output.status.success() {
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        let stdout = String::from_utf8_lossy(&output.stdout);
-        let error_msg = if !stderr.is_empty() {
-            stderr.to_string()
-        } else if !stdout.is_empty() {
-            stdout.to_string()
+    println!("Running simc: {}", simc_path.display());
+
+    let mut child = cmd
+        .spawn()
+        .map_err(|e| format!("Failed to run simc at '{}': {}", simc_path.display(), e))?;
+
+    // Consume stdout in a background task to prevent pipe deadlock.
+    // We only need stdout for error messages; the result goes to the JSON file.
+    let stdout = child.stdout.take();
+    let stdout_task = tokio::spawn(async move {
+        let mut buf = Vec::new();
+        if let Some(mut out) = stdout {
+            let _ = tokio::io::AsyncReadExt::read_to_end(&mut out, &mut buf).await;
+        }
+        buf
+    });
+
+    // Read stderr line-by-line for real-time profileset progress.
+    let stderr = child.stderr.take();
+    let mut stderr_collected: Vec<String> = Vec::new();
+    let progress_re = Regex::new(r"(\d+)/(\d+)").unwrap();
+
+    if let Some(err_stream) = stderr {
+        let mut reader = BufReader::new(err_stream);
+        let mut line_buf = String::new();
+        loop {
+            line_buf.clear();
+            match tokio::time::timeout(
+                std::time::Duration::from_secs(SIMC_TIMEOUT_SECS),
+                reader.read_line(&mut line_buf),
+            )
+            .await
+            {
+                Ok(Ok(0)) => break,   // EOF — process closed stderr
+                Ok(Err(_)) => break,  // read error
+                Err(_) => {
+                    // Timeout — kill the child
+                    let _ = child.kill().await;
+                    return Err(format!("simc timed out after {}s", SIMC_TIMEOUT_SECS));
+                }
+                Ok(Ok(_)) => {
+                    let line = line_buf.trim_end().to_string();
+                    // Look for profileset progress like "3/7"
+                    if let Some(caps) = progress_re.captures(&line) {
+                        if let (Ok(current), Ok(total)) =
+                            (caps[1].parse::<usize>(), caps[2].parse::<usize>())
+                        {
+                            if total > 1 && current <= total {
+                                on_profileset_progress(current, total);
+                            }
+                        }
+                    }
+                    stderr_collected.push(line);
+                }
+            }
+        }
+    }
+
+    // Wait for the process to exit.
+    let status = child
+        .wait()
+        .await
+        .map_err(|e| format!("Failed to wait for simc: {}", e))?;
+
+    let stdout_bytes = stdout_task.await.unwrap_or_default();
+
+    if !status.success() {
+        let stderr_text = stderr_collected.join("\n");
+        let stdout_text = String::from_utf8_lossy(&stdout_bytes);
+        let error_msg = if !stderr_text.trim().is_empty() {
+            stderr_text
+        } else if !stdout_text.trim().is_empty() {
+            stdout_text.to_string()
         } else {
             "simc exited with non-zero code".to_string()
         };
         return Err(format!(
             "simc failed (exit {:?}): {}",
-            output.status.code(),
+            status.code(),
             error_msg
         ));
     }
@@ -221,6 +305,7 @@ pub async fn run_simc(
         iterations,
         calculate_scale_factors,
         "",
+        |_, _| {}, // Quick sim has no profilesets to track
     )
     .await
 }
@@ -245,7 +330,7 @@ pub async fn run_simc_staged(
         .unwrap_or(1000) as u32;
 
     if combo_count < STAGED_THRESHOLD {
-        on_progress(10, "Simulating", &format!("{} combos", combo_count));
+        on_progress(5, "Simulating", &format!("{} combos", combo_count));
         let target_error = options
             .get("target_error")
             .and_then(|v| v.as_f64())
@@ -259,6 +344,15 @@ pub async fn run_simc_staged(
             user_iterations,
             false,
             "direct",
+            |current, total| {
+                // Map profileset progress to 5%–95%
+                let pct = 5 + ((current as f64 / total as f64) * 90.0) as u8;
+                on_progress(
+                    pct,
+                    "Simulating",
+                    &format!("{}/{} profilesets", current, total),
+                );
+            },
         )
         .await;
     }
@@ -273,17 +367,15 @@ pub async fn run_simc_staged(
         user_iterations,
     ];
 
+    // Progress ranges per stage: [10..40), [40..70), [70..95)
+    let stage_ranges: [(u8, u8); 3] = [(10, 40), (40, 70), (70, 95)];
+
     for (stage_idx, stage) in STAGES.iter().enumerate() {
         let is_final = stage_idx == STAGES.len() - 1;
+        let (range_start, range_end) = stage_ranges[stage_idx];
 
-        let stage_pct = match stage_idx {
-            0 => 10,
-            1 => 40,
-            2 => 70,
-            _ => 80,
-        };
         on_progress(
-            stage_pct,
+            range_start,
             &format!("Stage {} of {}", stage_idx + 1, STAGES.len()),
             &format!("{} combos · {} precision", remaining, stage.name),
         );
@@ -302,6 +394,18 @@ pub async fn run_simc_staged(
             stage_iterations[stage_idx],
             false,
             &stage.name.to_lowercase(),
+            |current, total| {
+                let pct = range_start
+                    + ((current as f64 / total as f64) * (range_end - range_start) as f64) as u8;
+                on_progress(
+                    pct,
+                    &format!("Stage {} of {}", stage_idx + 1, STAGES.len()),
+                    &format!(
+                        "{}/{} profilesets · {} precision",
+                        current, total, stage.name
+                    ),
+                );
+            },
         )
         .await?;
 

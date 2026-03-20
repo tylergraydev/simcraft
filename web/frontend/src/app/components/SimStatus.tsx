@@ -1,11 +1,55 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 interface SimStatusProps {
   status: string;
   progress: number;
   progressStage?: string;
   progressDetail?: string;
   stagesCompleted?: string[];
+}
+
+/**
+ * Smoothly interpolates the displayed progress between backend updates.
+ * The backend only reports progress at a few milestones (e.g. 10%, 40%, 70%),
+ * so we gradually advance the bar in between to avoid it looking frozen.
+ */
+function useSmoothedProgress(serverProgress: number, isRunning: boolean): number {
+  const [display, setDisplay] = useState(serverProgress);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    // Jump forward immediately when the server reports a higher value
+    setDisplay((prev) => Math.max(prev, serverProgress));
+  }, [serverProgress]);
+
+  useEffect(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    if (!isRunning) {
+      intervalRef.current = null;
+      return;
+    }
+
+    // Slowly creep toward 95% while the sim is running.
+    // The remaining 5% is reserved for the actual completion jump.
+    intervalRef.current = setInterval(() => {
+      setDisplay((prev) => {
+        const ceiling = Math.max(serverProgress + 15, 95);
+        if (prev >= ceiling) return prev;
+        // Slow down as we approach the ceiling
+        const step = Math.max(0.3, (ceiling - prev) * 0.04);
+        return Math.min(prev + step, ceiling);
+      });
+    }, 500);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [isRunning, serverProgress]);
+
+  return Math.round(display);
 }
 
 export default function SimStatus({
@@ -15,6 +59,8 @@ export default function SimStatus({
   progressDetail,
   stagesCompleted,
 }: SimStatusProps) {
+  const isRunning = status === "running";
+  const displayProgress = useSmoothedProgress(progress, isRunning);
   const title = progressStage || (status === "pending" ? "Queued" : "Simulating");
   const hasStages = stagesCompleted && stagesCompleted.length > 0;
 
@@ -33,11 +79,11 @@ export default function SimStatus({
         <div className="w-full bg-surface rounded-full h-1.5 overflow-hidden">
           <div
             className="bg-gold h-full rounded-full transition-all duration-700"
-            style={{ width: `${Math.max(progress, status === "pending" ? 2 : 5)}%` }}
+            style={{ width: `${Math.max(displayProgress, status === "pending" ? 2 : 5)}%` }}
           />
         </div>
         <p className="text-[10px] text-gray-600 text-center mt-1.5 font-mono tabular-nums">
-          {progress}%
+          {displayProgress}%
         </p>
       </div>
 

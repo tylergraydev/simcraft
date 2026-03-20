@@ -22,12 +22,22 @@ interface JobData {
 
 export default function SimResultClient() {
   const params = useParams();
-  const id = params.id as string;
+  const paramId = params.id as string;
+
+  // In static export, useParams() may initially return "_" (the generateStaticParams
+  // placeholder) before the router reconciles with the actual URL. Fall back to the URL.
+  let id = paramId;
+  if ((!paramId || paramId === "_") && typeof window !== "undefined") {
+    const match = window.location.pathname.match(/\/sim\/(.+)/);
+    if (match) id = match[1];
+  }
+
   const [job, setJob] = useState<JobData | null>(null);
   const [fetchError, setFetchError] = useState("");
 
   useEffect(() => {
-    if (!id) return;
+    if (!id || id === "_") return;
+    setFetchError("");
     let active = true;
     async function poll() {
       try {

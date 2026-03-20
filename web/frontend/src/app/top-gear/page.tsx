@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import TopGearItemSelector from "../components/TopGearItemSelector";
 import {
@@ -14,7 +13,6 @@ import { API_URL } from "../lib/api";
 const ITERATION_STEPS = [100, 250, 500, 1000, 2500, 5000, 10000];
 
 export default function TopGearPage() {
-  const router = useRouter();
   const [simcInput, setSimcInput] = useState("");
   const [itemsBySlot, setItemsBySlot] = useState<ItemsBySlot | null>(null);
   const [selectedItems, setSelectedItems] = useState<Record<string, number[]>>(
@@ -85,7 +83,7 @@ export default function TopGearPage() {
         throw new Error(data.detail || `Server error ${res.status}`);
       }
       const data = await res.json();
-      router.push(`/sim/${data.id}`);
+      window.location.href = `/sim/${data.id}`;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to submit sim");
     } finally {

@@ -31,16 +31,28 @@ fn main() {
             let data_dir = resource_dir.join("data");
             game_data::load(&data_dir);
 
-            // Start HTTP server on a background thread with its own persistent tokio runtime
+            // In production, serve the frontend from the resource dir
+            // In dev, the Next.js dev server handles it
+            let frontend_dir = if cfg!(debug_assertions) {
+                None
+            } else {
+                let dir = resource_dir.join("frontend");
+                if dir.exists() {
+                    Some(dir)
+                } else {
+                    None
+                }
+            };
+
+            // Start HTTP server
             let resource_dir_clone = resource_dir.clone();
             let (tx, rx) = mpsc::channel();
             std::thread::spawn(move || {
                 let rt = tokio::runtime::Runtime::new()
                     .expect("Failed to create tokio runtime");
                 rt.block_on(async {
-                    let port = server::start(&resource_dir_clone).await;
+                    let port = server::start(&resource_dir_clone, frontend_dir).await;
                     tx.send(port).unwrap();
-                    // Keep the runtime alive so the server keeps running
                     tokio::signal::ctrl_c().await.ok();
                 });
             });

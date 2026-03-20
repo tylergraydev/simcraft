@@ -1,5 +1,6 @@
 use actix_cors::Cors;
-use actix_web::{web, App, HttpServer, HttpResponse};
+use actix_files::NamedFile;
+use actix_web::{web, App, HttpServer, HttpResponse, HttpRequest};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::collections::HashMap;
@@ -12,6 +13,10 @@ use crate::profileset_generator;
 use crate::result_parser;
 use crate::simc_runner;
 use crate::addon_parser;
+
+/// Newtype wrapper to avoid colliding with the simc `web::Data<PathBuf>`.
+#[derive(Clone)]
+struct FrontendDir(PathBuf);
 
 // ---------- Request / Response types ----------
 
@@ -468,9 +473,32 @@ async fn health_check() -> HttpResponse {
     }))
 }
 
-/// Start the actix-web HTTP server on a random available port.
+/// SPA fallback: serve the appropriate HTML file for client-side routes
+async fn spa_fallback(req: HttpRequest, frontend_dir: web::Data<FrontendDir>) -> actix_web::Result<NamedFile> {
+    let path = req.path();
+
+    // Try exact file match first (e.g., /quick-sim -> quick-sim.html)
+    let trimmed = path.trim_start_matches('/');
+    let html_path = frontend_dir.0.join(format!("{}.html", trimmed));
+    if html_path.exists() {
+        return Ok(NamedFile::open(html_path)?);
+    }
+
+    // /sim/{id} -> sim/_.html (the placeholder page)
+    if path.starts_with("/sim/") {
+        let sim_html = frontend_dir.0.join("sim").join("_.html");
+        if sim_html.exists() {
+            return Ok(NamedFile::open(sim_html)?);
+        }
+    }
+
+    // Fallback to index.html
+    Ok(NamedFile::open(frontend_dir.0.join("index.html"))?)
+}
+
+/// Start the actix-web HTTP server.
 /// Returns the port number.
-pub async fn start(resource_dir: &Path) -> u16 {
+pub async fn start(resource_dir: &Path, frontend_dir: Option<PathBuf>) -> u16 {
     let port: u16 = 17384;
 
     let simc_path = if cfg!(windows) {
@@ -484,6 +512,7 @@ pub async fn start(resource_dir: &Path) -> u16 {
 
     let store_data = web::Data::new(job_store);
     let simc_data = web::Data::new(simc_path_buf);
+    let frontend = frontend_dir.clone();
 
     let bind_addr = format!("127.0.0.1:{}", port);
 
@@ -494,7 +523,7 @@ pub async fn start(resource_dir: &Path) -> u16 {
             .allow_any_header()
             .max_age(3600);
 
-        App::new()
+        let mut app = App::new()
             .wrap(cors)
             .app_data(store_data.clone())
             .app_data(simc_data.clone())
@@ -507,7 +536,20 @@ pub async fn start(resource_dir: &Path) -> u16 {
             .route("/api/enchant-info/{id}", web::get().to(get_enchant_info))
             .route("/api/gem-info/{id}", web::get().to(get_gem_info))
             .route("/api/upgrade-options", web::get().to(get_upgrade_options))
-            .route("/health", web::get().to(health_check))
+            .route("/health", web::get().to(health_check));
+
+        // Serve static frontend files in production (not in dev mode)
+        if let Some(ref dir) = frontend {
+            app = app
+                .app_data(web::Data::new(FrontendDir(dir.clone())))
+                .service(
+                    actix_files::Files::new("/_next", dir.join("_next"))
+                        .prefer_utf8(true)
+                )
+                .default_service(web::get().to(spa_fallback));
+        }
+
+        app
     })
     .bind(&bind_addr)
     .expect(&format!("Failed to bind to {}", bind_addr))

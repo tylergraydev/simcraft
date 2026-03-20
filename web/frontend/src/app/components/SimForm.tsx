@@ -1,11 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { API_URL } from "../lib/api";
 
 export default function SimForm() {
-  const router = useRouter();
   const [simcInput, setSimcInput] = useState("");
   const [simType, setSimType] = useState<"quick" | "stat_weights">("quick");
   const [submitting, setSubmitting] = useState(false);
@@ -38,7 +36,7 @@ export default function SimForm() {
         throw new Error(data.detail || `Server error ${res.status}`);
       }
       const data = await res.json();
-      router.push(`/sim/${data.id}`);
+      window.location.href = `/sim/${data.id}`;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to submit sim");
     } finally {

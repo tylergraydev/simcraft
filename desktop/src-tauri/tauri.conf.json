@@ -5,8 +5,8 @@
   "identifier": "com.simhammer.app",
   "build": {
     "devUrl": "http://localhost:3000",
-    "frontendDist": "../../web/frontend/out",
-    "beforeBuildCommand": "npm run --prefix ../web/frontend build:desktop",
+    "frontendDist": "http://localhost:17384",
+    "beforeBuildCommand": "npm run --prefix ../web/frontend build:desktop && node copy-frontend.js",
     "beforeDevCommand": "npm run --prefix ../web/frontend dev"
   },
   "app": {
@@ -31,7 +31,8 @@
     ],
     "resources": {
       "resources/data/*": "data/",
-      "resources/simc/*": "simc/"
+      "resources/simc/*": "simc/",
+      "resources/frontend": "frontend/"
     }
   }
 }

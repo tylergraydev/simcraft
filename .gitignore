@@ -26,5 +26,8 @@ web/backend/data/*.json
 
 # Tauri build output and bundled resources
 desktop/src-tauri/target/
+desktop/src-tauri/gen/
 desktop/src-tauri/resources/data/*.json
 desktop/src-tauri/resources/simc/
+desktop/src-tauri/resources/frontend/
+desktop/resources/

@@ -59,6 +59,13 @@ export default function RootLayout({
           <SimTypeCards />
           {children}
         </main>
+        <footer className="border-t border-border/50 mt-16 py-6">
+          <p className="text-center text-[11px] text-gray-600 max-w-lg mx-auto leading-relaxed">
+            SimHammer is a pet project held together by coffee, duct tape, and prayers to the RNG gods.
+            Bugs are not features — but they might sim higher than your gear. Use at your own risk.
+            Not affiliated with Blizzard, Raidbots, or anyone who knows what they&apos;re doing.
+          </p>
+        </footer>
       </body>
     </html>
   );

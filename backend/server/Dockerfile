@@ -53,6 +53,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 COPY --from=builder /build/target/release/simhammer-server /usr/local/bin/simhammer-server
 COPY --from=simc-builder /usr/local/bin/simc /usr/local/bin/simc
 COPY --from=fetcher /data /app/resources/data
+COPY core/season-config.json /app/resources/data/season-config.json
 
 WORKDIR /app
 ENV DATA_DIR=/app/resources/data

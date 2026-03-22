@@ -1,0 +1,36 @@
+{
+  "raidDifficultyTracks": {
+    "lfr": "Veteran",
+    "normal": "Champion",
+    "heroic": "Hero",
+    "mythic": "Myth"
+  },
+  "encounterUpgradeLevel": {
+    "2733": 1,
+    "2734": 2,
+    "2736": 2,
+    "2735": 3,
+    "2737": 3,
+    "2738": 4,
+    "2795": 2,
+    "2739": 3,
+    "2740": 4
+  },
+  "dungeonNormal": {
+    "ilvl": 214,
+    "quality": 3
+  },
+  "dungeonDifficultyTracks": {
+    "heroic": { "track": "Adventurer", "level": 2 },
+    "mythic": { "track": "Champion", "level": 1 },
+    "mythic+2": { "track": "Champion", "level": 2 },
+    "mythic+3": { "track": "Champion", "level": 2 },
+    "mythic+4": { "track": "Champion", "level": 3 },
+    "mythic+5": { "track": "Champion", "level": 4 },
+    "mythic+6": { "track": "Champion", "level": 5 },
+    "mythic+7": { "track": "Hero", "level": 1 },
+    "mythic+8": { "track": "Hero", "level": 2 },
+    "mythic+9": { "track": "Hero", "level": 2 },
+    "mythic+10": { "track": "Hero", "level": 3 }
+  }
+}

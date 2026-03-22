@@ -26,7 +26,7 @@ export default function TalentPicker() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-gray-500">Talents</span>
+      <span className="text-xs text-muted">Talents</span>
       <select
         value={selectedTalent}
         onChange={(e) => setSelectedTalent(e.target.value)}

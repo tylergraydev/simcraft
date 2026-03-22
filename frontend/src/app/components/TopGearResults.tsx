@@ -250,8 +250,8 @@ export default function TopGearResults({
                     onClick={() => setGroupMode(mode)}
                     className={`px-2.5 py-1 rounded text-[11px] font-medium transition-all border ${
                       groupMode === mode
-                        ? "bg-white text-black border-white"
-                        : "bg-surface-2 text-gray-400 border-border hover:border-gray-500 hover:text-white"
+                        ? "bg-gold/10 text-gold border-gold"
+                        : "bg-surface-2 text-fg-muted border-border hover:border-muted hover:text-fg"
                     }`}
                   >
                     {label}
@@ -270,7 +270,7 @@ export default function TopGearResults({
             {groupedResults.map(([encounter, group]) => (
               <div key={encounter}>
                 <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-border/50">
-                  <span className="text-[12px] font-semibold text-gray-300">{encounter}</span>
+                  <span className="text-[12px] font-semibold text-fg-muted">{encounter}</span>
                   <span className="text-[10px] text-muted font-mono">{group.length} items</span>
                 </div>
                 <div className="space-y-1">
@@ -351,7 +351,7 @@ function ResultRow({
       <div className="relative flex items-center justify-between px-3 py-2 gap-3">
         <div className="flex items-center gap-2 min-w-0 flex-1">
           {rank != null && (
-            <span className="text-[10px] font-mono text-gray-600 w-5 text-right shrink-0 tabular-nums">
+            <span className="text-[10px] font-mono text-muted w-5 text-right shrink-0 tabular-nums">
               {rank}
             </span>
           )}
@@ -407,7 +407,7 @@ function ResultRow({
               </span>
             )}
           </span>
-          <span className="text-sm font-mono text-gray-300 tabular-nums w-16 text-right">
+          <span className="text-sm font-mono text-fg-muted tabular-nums w-16 text-right">
             {Math.round(result.dps).toLocaleString()}
           </span>
         </div>
@@ -436,8 +436,8 @@ function GearSlotRow({
       <div className="flex items-center gap-2 rounded-lg px-2 py-1.5">
         <div className="w-7 h-7 shrink-0 rounded bg-white/[0.03] border border-border" />
         <div>
-          <p className="text-[11px] text-gray-600">{SLOT_LABELS[slot] || slot}</p>
-          <p className="text-[9px] text-gray-700">Empty</p>
+          <p className="text-[11px] text-muted">{SLOT_LABELS[slot] || slot}</p>
+          <p className="text-[9px] text-muted/60">Empty</p>
         </div>
       </div>
     );

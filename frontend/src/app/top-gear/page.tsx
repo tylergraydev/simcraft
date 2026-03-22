@@ -110,15 +110,15 @@ export default function TopGearPage() {
           >
             <div
               className={`absolute top-0.5 w-4 h-4 rounded-full transition-all ${
-                copyEnchants ? "left-[18px] bg-black" : "left-0.5 bg-gray-500"
+                copyEnchants ? "left-[18px] bg-black" : "left-0.5 bg-muted"
               }`}
             />
           </div>
           <div>
-            <span className="text-[13px] font-medium text-gray-300 group-hover:text-white transition-colors">
+            <span className="text-[13px] font-medium text-fg-muted group-hover:text-fg transition-colors">
               Copy Enchants
             </span>
-            <p className="text-[11px] text-gray-600">
+            <p className="text-[11px] text-muted">
               Apply equipped enchants to alternatives
             </p>
           </div>
@@ -132,15 +132,15 @@ export default function TopGearPage() {
           >
             <div
               className={`absolute top-0.5 w-4 h-4 rounded-full transition-all ${
-                maxUpgrade ? "left-[18px] bg-black" : "left-0.5 bg-gray-500"
+                maxUpgrade ? "left-[18px] bg-black" : "left-0.5 bg-muted"
               }`}
             />
           </div>
           <div>
-            <span className="text-[13px] font-medium text-gray-300 group-hover:text-white transition-colors">
+            <span className="text-[13px] font-medium text-fg-muted group-hover:text-fg transition-colors">
               Sim Highest Upgrade
             </span>
-            <p className="text-[11px] text-gray-600">
+            <p className="text-[11px] text-muted">
               Simulate all items at max upgrade level
             </p>
           </div>

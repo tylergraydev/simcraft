@@ -587,7 +587,7 @@ function ItemDetails({
                     className={`w-full text-left px-3 py-1.5 text-[11px] flex items-center justify-between gap-2 ${
                       isCurrent
                         ? "text-muted cursor-default"
-                        : "text-gray-300 hover:bg-white/[0.05] hover:text-white"
+                        : "text-fg-muted hover:bg-white/[0.05] hover:text-fg"
                     }`}
                   >
                     <span>{opt.fullName}</span>
@@ -605,7 +605,7 @@ function ItemDetails({
             type="button"
             onClick={(e) => { e.stopPropagation(); e.preventDefault(); onUpgradeClick(); }}
             className={`w-5 h-5 rounded flex items-center justify-center transition-colors ${
-              isMenuOpen ? "bg-gold/20 text-gold" : "text-gray-600 hover:text-gray-400 hover:bg-white/[0.05]"
+              isMenuOpen ? "bg-gold/20 text-gold" : "text-muted hover:text-fg-muted hover:bg-white/[0.05]"
             }`}
             title="Add copy at different upgrade level"
           >

@@ -81,9 +81,9 @@ export default function SimStatus({
       <div className="w-10 h-10 border-2 border-border border-t-gold rounded-full animate-spin" />
 
       <div className="text-center">
-        <p className="text-sm text-white font-medium">{title}</p>
+        <p className="text-sm text-fg font-medium">{title}</p>
         {progressDetail && (
-          <p className="text-[11px] text-gray-400 mt-1">{progressDetail}</p>
+          <p className="text-[11px] text-fg-muted mt-1">{progressDetail}</p>
         )}
       </div>
 
@@ -95,11 +95,11 @@ export default function SimStatus({
           />
         </div>
         <div className="flex items-center justify-between mt-2">
-          <p className="text-[11px] text-gray-400 font-mono tabular-nums">
+          <p className="text-[11px] text-fg-muted font-mono tabular-nums">
             {displayProgress}%
           </p>
           {cpuUsage !== null && (
-            <p className="text-[11px] text-gray-400 font-mono tabular-nums">
+            <p className="text-[11px] text-fg-muted font-mono tabular-nums">
               CPU {Math.round(cpuUsage)}%
             </p>
           )}
@@ -113,7 +113,7 @@ export default function SimStatus({
               <svg className="w-3 h-3 text-emerald-500 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 5L6.5 10.5L4 8" />
               </svg>
-              <span className="text-[11px] text-gray-400">{stage}</span>
+              <span className="text-[11px] text-fg-muted">{stage}</span>
             </div>
           ))}
           {progressStage && (
@@ -121,9 +121,9 @@ export default function SimStatus({
               <div className="w-3 h-3 flex items-center justify-center shrink-0">
                 <div className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse" />
               </div>
-              <span className="text-[11px] text-gray-400">
+              <span className="text-[11px] text-fg-muted">
                 {progressStage}
-                {progressDetail && <span className="text-gray-500"> · {progressDetail}</span>}
+                {progressDetail && <span className="text-muted"> · {progressDetail}</span>}
               </span>
             </div>
           )}

@@ -50,7 +50,7 @@ export default function UpdateChecker() {
   if (!updateAvailable) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-[100] max-w-sm bg-[#1a1a2e] border border-gold/40 rounded-lg shadow-lg shadow-black/40 p-4">
+    <div className="fixed bottom-4 right-4 z-[100] max-w-sm bg-surface border border-gold/40 rounded-lg shadow-lg shadow-black/40 p-4">
       <div className="flex items-start gap-3">
         <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0 mt-0.5">
           <svg className="w-4 h-4 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -58,10 +58,10 @@ export default function UpdateChecker() {
           </svg>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-200">
+          <p className="text-sm font-medium text-fg">
             Update available
           </p>
-          <p className="text-xs text-gray-400 mt-0.5">
+          <p className="text-xs text-fg-muted mt-0.5">
             SimHammer v{version} is ready to install.
           </p>
           {error && (
@@ -78,7 +78,7 @@ export default function UpdateChecker() {
             <button
               onClick={() => setUpdateAvailable(false)}
               disabled={installing}
-              className="px-3 py-1.5 text-xs font-medium rounded text-gray-400 hover:text-gray-200 transition-colors"
+              className="px-3 py-1.5 text-xs font-medium rounded text-fg-muted hover:text-fg transition-colors"
             >
               Later
             </button>

@@ -87,7 +87,7 @@ export default function SimResultClient() {
         <p className="text-sm text-red-400/70">{fetchError}</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 text-xs font-medium text-white bg-surface-2 border border-border rounded-lg hover:border-gray-500 transition-colors"
+          className="px-4 py-2 text-xs font-medium text-fg bg-surface-2 border border-border rounded-lg hover:border-muted transition-colors"
         >
           Retry
         </button>

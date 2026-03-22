@@ -16,7 +16,7 @@ Thumbs.db
 
 # Build output and bundled resources
 backend/target/
-backend/resources/data/*.json
+backend/resources/data/
 backend/resources/simc/
 backend/resources/frontend/
 desktop/resources/

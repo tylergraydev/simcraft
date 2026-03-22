@@ -12,47 +12,37 @@ SimulationCraft made simple. Run sims from your browser or download the desktop 
 - **Stat Weights** — See which stats matter most for your character
 - **Desktop App** — Run everything locally with all your CPU cores, no server needed
 
+## Prerequisites
+
+- **Docker** — required for both web deployment and desktop development
+- **Node.js** 20+ and **Rust** — additionally required for desktop development
+
 ## Project Structure
 
 ```
 frontend/          Next.js 14 app (shared by web + desktop)
 backend/           Cargo workspace (Rust)
   core/            simhammer-core library (API routes, simc runner, game data)
-  server/          simhammer-server (standalone binary, --desktop flag for desktop mode)
+  server/          simhammer-server binary (--desktop flag for desktop mode)
   resources/       Runtime resources (data/, simc/, frontend/) — gitignored
 desktop/           Electron app (main process, preload, build scripts)
-docker-compose.yml Web deployment
+docker-compose.yml Web deployment + desktop resource provisioning
 ```
 
-## Web App
+## Web
 
-### Quick Start (Docker)
+### Quick Start
 
 ```bash
+git clone https://github.com/sortbek/simcraft.git
+cd simcraft
 docker compose up --build
 ```
 
-This builds everything automatically:
-- Compiles the Rust backend server
-- Builds SimulationCraft from source
-- Downloads all game data files from Raidbots
-- Builds the Next.js frontend
+Docker handles everything automatically — compiles the Rust backend, builds SimC from source, fetches game data from Raidbots, and builds the Next.js frontend.
 
 - Frontend: http://localhost:3000
 - API: http://localhost:8000
-
-### Manual Setup
-
-```bash
-# Terminal 1 — Backend
-cd backend
-export SIMC_PATH=/path/to/simc
-cargo run -p simhammer-server
-
-# Terminal 2 — Frontend
-cd frontend
-npm run dev
-```
 
 ### Deploy to a VPS
 
@@ -60,33 +50,51 @@ npm run dev
 2. Run `docker compose up -d --build`
 3. Set up nginx as reverse proxy (port 80 → 3000 for frontend, /api/ → 8000 for backend)
 
-## Desktop App
+## Desktop
 
 ### Download
 
 Grab the latest installer from [GitHub Releases](https://github.com/sortbek/simcraft/releases/latest).
 
-### Build from Source
+### Development
 
-Prerequisites: Rust, Node.js 20+
+#### 1. Install dependencies
 
 ```bash
-# Development (single command)
-npm run desktop:dev
+cd frontend && npm install && cd ..
+cd desktop && npm install && cd ..
+```
 
-# Build installer
+#### 2. Run
+
+```bash
+npm run desktop:dev
+```
+
+On first run, this automatically uses Docker to fetch game data from Raidbots and compile SimulationCraft from source (stored in `backend/resources/`). On subsequent runs, this step is skipped since the resources already exist.
+
+After resources are ready, it:
+1. Builds the Rust backend in debug mode
+2. Starts the Next.js dev server on port 3000
+3. Launches the Electron app
+
+To re-fetch resources (e.g. after a game patch), delete `backend/resources/data/` and/or `backend/resources/simc/` and run `npm run desktop:dev` again.
+
+### Build installer
+
+```bash
 npm run desktop:build
 ```
 
-## Game Data
+Builds the frontend (static export), compiles the Rust backend in release mode, copies all resources, and packages everything into an installer with electron-builder.
 
-Game data files are fetched from Raidbots and stored in `backend/resources/data/`. To download or update locally:
+Output goes to `desktop/dist/`.
 
-```bash
-bash backend/resources/data/fetch-data.sh backend/resources/data/
-```
-
-This reads the [Raidbots metadata.json](https://www.raidbots.com/static/data/live/metadata.json) and downloads all listed files. The Docker build does this automatically.
+| Platform | Target |
+|----------|--------|
+| Windows  | NSIS installer |
+| macOS    | DMG |
+| Linux    | AppImage, deb |
 
 ## Getting a SimC Addon String
 

@@ -40,7 +40,30 @@ function waitForUrl(url, timeout = 30000) {
   });
 }
 
+function ensureResources() {
+  const dataDir = path.join(BACKEND_DIR, "resources", "data");
+  const simcDir = path.join(BACKEND_DIR, "resources", "simc");
+  const simcBinary = path.join(simcDir, process.platform === "win32" ? "simc.exe" : "simc");
+  const metadataFile = path.join(dataDir, "metadata.json");
+
+  if (fs.existsSync(simcBinary) && fs.existsSync(metadataFile)) {
+    console.log("[dev] Resources up to date.");
+    return;
+  }
+
+  console.log("[dev] Resources missing — fetching via Docker...");
+  fs.mkdirSync(dataDir, { recursive: true });
+  fs.mkdirSync(simcDir, { recursive: true });
+  execSync("docker compose --profile desktop up resources --build", {
+    cwd: ROOT,
+    stdio: "inherit",
+  });
+}
+
 async function main() {
+  // 0. Ensure game data and simc binary exist
+  ensureResources();
+
   // 1. Build backend if binary doesn't exist
   if (!fs.existsSync(serverBinary)) {
     buildBackend();

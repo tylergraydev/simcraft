@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import DesktopAppLink from "./components/DesktopAppLink";
+import ErrorBoundary from "./components/ErrorBoundary";
 import SettingsPopover from "./components/SettingsPopover";
 import { SimProvider } from "./components/SimContext";
 import SimSharedConfig from "./components/SimSharedConfig";
@@ -61,7 +62,7 @@ export default function RootLayout({
           <main className="max-w-5xl mx-auto px-6 py-10">
             <SimTypeCards />
             <SimSharedConfig />
-            {children}
+            <ErrorBoundary>{children}</ErrorBoundary>
           </main>
         </SimProvider>
         <footer className="border-t border-border/50 mt-16 py-6">

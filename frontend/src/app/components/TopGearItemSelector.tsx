@@ -386,6 +386,7 @@ export default function TopGearItemSelector({
                       height={24}
                       className="w-full h-full"
                       loading="lazy"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                     />
                   </div>
                   <ItemDetails
@@ -469,6 +470,7 @@ export default function TopGearItemSelector({
                       height={24}
                       className="w-full h-full"
                       loading="lazy"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                     />
                   </div>
                   <ItemDetails

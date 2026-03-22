@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSimContext } from "../components/SimContext";
 import { detectClass } from "../lib/parseAddonString";
-import { API_URL } from "../lib/api";
+import { API_URL, apiFetch, throwResponseError } from "../lib/api";
 
 interface Instance {
   id: number;
@@ -141,6 +141,7 @@ export default function DropFinderPage() {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [instanceError, setInstanceError] = useState("");
   const [difficulty, setDifficulty] = useState<Difficulty>("heroic");
   const [dungeonDiff, setDungeonDiff] = useState("mythic+10");
   const [upgradeTracks, setUpgradeTracks] = useState<UpgradeTracks>({});
@@ -165,11 +166,24 @@ export default function DropFinderPage() {
     return null;
   }, [drops, difficulty, dungeonDiff, upgradeTracks]);
 
-  useEffect(() => {
-    fetch(`${API_URL}/api/instances`)
-      .then((r) => r.json())
+  function fetchInstances() {
+    setInstanceError("");
+    apiFetch(`${API_URL}/api/instances`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then(setInstances)
-      .catch(() => {});
+      .catch((err) => {
+        setInstanceError(
+          err instanceof Error ? err.message : "Failed to load instances"
+        );
+      });
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    fetchInstances();
     fetch(`${API_URL}/api/upgrade-tracks`)
       .then((r) => r.json())
       .then(setUpgradeTracks)
@@ -192,8 +206,11 @@ export default function DropFinderPage() {
     const url = selectedId.startsWith("type:")
       ? `${API_URL}/api/instances/type/${selectedId.slice(5)}/drops`
       : `${API_URL}/api/instances/${selectedId}/drops`;
-    fetch(`${url}${qs ? `?${qs}` : ""}`)
-      .then((r) => r.json())
+    apiFetch(`${url}${qs ? `?${qs}` : ""}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then((data) => {
         setDrops(data.detail ? null : data);
       })
@@ -244,7 +261,7 @@ export default function DropFinderPage() {
         }
       }
 
-      const res = await fetch(`${API_URL}/api/droptimizer/sim`, {
+      const res = await apiFetch(`${API_URL}/api/droptimizer/sim`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -259,11 +276,9 @@ export default function DropFinderPage() {
           ...(selectedTalent ? { talents: selectedTalent } : {}),
           ...(customSimc ? { custom_simc: customSimc } : {}),
         }),
+        timeoutMs: 60_000,
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || `Server error ${res.status}`);
-      }
+      if (!res.ok) await throwResponseError(res);
       const data = await res.json();
       window.location.href = `/sim/${data.id}`;
     } catch (err: unknown) {
@@ -552,6 +567,8 @@ export default function DropFinderPage() {
                         src={`https://render.worldofwarcraft.com/icons/56/${item.icon}.jpg`}
                         alt=""
                         className="w-6 h-6 rounded"
+                        loading="lazy"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                       />
                       <a
                         href={`https://www.wowhead.com/item=${item.item_id}`}
@@ -626,8 +643,21 @@ export default function DropFinderPage() {
         </div>
       )}
 
+      {/* Instance load error */}
+      {instanceError && (
+        <div className="card border-red-500/20 p-6 text-center space-y-3">
+          <p className="text-sm text-red-400">{instanceError}</p>
+          <button
+            onClick={fetchInstances}
+            className="px-4 py-2 text-xs font-medium text-white bg-surface-2 border border-border rounded-lg hover:border-gray-500 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       {/* Empty state */}
-      {!selectedId && !loading && !category && (
+      {!selectedId && !loading && !category && !instanceError && (
         <p className="text-sm text-muted text-center py-6">
           Select a category to get started.
         </p>

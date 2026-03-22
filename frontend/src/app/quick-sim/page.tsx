@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSimContext } from "../components/SimContext";
-import { API_URL } from "../lib/api";
+import { API_URL, apiFetch, throwResponseError } from "../lib/api";
 
 export default function QuickSimPage() {
   const { simcInput, fightStyle, threads, selectedTalent, targetCount, fightLength, customSimc } = useSimContext();
@@ -18,7 +18,7 @@ export default function QuickSimPage() {
     }
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_URL}/api/sim`, {
+      const res = await apiFetch(`${API_URL}/api/sim`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -33,11 +33,9 @@ export default function QuickSimPage() {
           ...(selectedTalent ? { talents: selectedTalent } : {}),
           ...(customSimc ? { custom_simc: customSimc } : {}),
         }),
+        timeoutMs: 60_000,
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || `Server error ${res.status}`);
-      }
+      if (!res.ok) await throwResponseError(res);
       const data = await res.json();
       window.location.href = `/sim/${data.id}`;
     } catch (err: unknown) {

@@ -10,7 +10,7 @@ import {
   detectClass,
   classMaxArmor,
 } from "../lib/parseAddonString";
-import { API_URL } from "../lib/api";
+import { API_URL, apiFetch, throwResponseError } from "../lib/api";
 
 export default function TopGearPage() {
   const { simcInput, fightStyle, threads, selectedTalent, targetCount, fightLength, customSimc } = useSimContext();
@@ -60,7 +60,7 @@ export default function TopGearPage() {
     setError("");
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_URL}/api/top-gear/sim`, {
+      const res = await apiFetch(`${API_URL}/api/top-gear/sim`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -78,11 +78,9 @@ export default function TopGearPage() {
           ...(selectedTalent ? { talents: selectedTalent } : {}),
           ...(customSimc ? { custom_simc: customSimc } : {}),
         }),
+        timeoutMs: 60_000,
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || `Server error ${res.status}`);
-      }
+      if (!res.ok) await throwResponseError(res);
       const data = await res.json();
       window.location.href = `/sim/${data.id}`;
     } catch (err: unknown) {

@@ -1,8 +1,14 @@
-# SimHammer
+<p align="center">
+  <img src="frontend/public/logo.png" alt="SimHammer" width="300" />
+</p>
 
-SimulationCraft made simple. Run sims from your browser or download the desktop app.
+<h1 align="center">SimHammer</h1>
 
-**[simhammer.com](https://simhammer.com)** · **[Download Desktop App](https://github.com/sortbek/simcraft/releases/latest)**
+<p align="center">
+  SimulationCraft made simple. Run sims from your browser or download the desktop app.
+  <br />
+  <strong><a href="https://simhammer.com">simhammer.com</a></strong> · <strong><a href="https://github.com/sortbek/simcraft/releases/latest">Download Desktop App</a></strong>
+</p>
 
 ## Features
 

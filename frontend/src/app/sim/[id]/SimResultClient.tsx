@@ -7,7 +7,7 @@ import SimStatus from "../../components/SimStatus";
 import StatWeightsTable from "../../components/StatWeightsTable";
 import TopGearResults from "../../components/TopGearResults";
 
-import { API_URL } from "../../lib/api";
+import { API_URL, apiFetch } from "../../lib/api";
 
 interface JobData {
   id: string;
@@ -34,44 +34,76 @@ export default function SimResultClient() {
 
   const [job, setJob] = useState<JobData | null>(null);
   const [fetchError, setFetchError] = useState("");
+  const [retrying, setRetrying] = useState(false);
 
   useEffect(() => {
     if (!id || id === "_") return;
     setFetchError("");
-    let active = true;
+    const controller = new AbortController();
+    let failCount = 0;
+    const MAX_RETRIES = 5;
+
     async function poll() {
+      if (controller.signal.aborted) return;
       try {
-        const res = await fetch(`${API_URL}/api/sim/${id}`);
+        const res = await apiFetch(`${API_URL}/api/sim/${id}`, {
+          signal: controller.signal,
+          timeoutMs: 15_000,
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data: JobData = await res.json();
-        if (active) setJob(data);
+        if (controller.signal.aborted) return;
+        failCount = 0;
+        setRetrying(false);
+        setJob(data);
         if (data.status === "pending" || data.status === "running") {
           setTimeout(poll, 2000);
         }
       } catch (err) {
-        if (active)
+        if (controller.signal.aborted) return;
+        if (err instanceof DOMException && err.name === "AbortError") return;
+
+        failCount++;
+        if (failCount <= MAX_RETRIES) {
+          setRetrying(true);
+          const backoff = Math.min(2000 * Math.pow(2, failCount - 1), 16000);
+          setTimeout(poll, backoff);
+        } else {
+          setRetrying(false);
           setFetchError(
             err instanceof Error ? err.message : "Failed to fetch status"
           );
+        }
       }
     }
     poll();
-    return () => { active = false; };
+    return () => controller.abort();
   }, [id]);
 
   if (fetchError) {
     return (
-      <div className="card border-red-500/20 p-6">
-        <p className="text-sm font-medium text-red-400 mb-1">Error</p>
+      <div className="card border-red-500/20 p-6 text-center space-y-3">
+        <p className="text-sm font-medium text-red-400">Error</p>
         <p className="text-sm text-red-400/70">{fetchError}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 text-xs font-medium text-white bg-surface-2 border border-border rounded-lg hover:border-gray-500 transition-colors"
+        >
+          Retry
+        </button>
       </div>
     );
   }
 
   if (!job) {
     return (
-      <div className="flex flex-col items-center justify-center py-20">
+      <div className="flex flex-col items-center justify-center py-20 gap-3">
         <div className="w-8 h-8 border-2 border-border border-t-gold rounded-full animate-spin" />
+        {retrying && (
+          <p className="text-xs text-yellow-500/80">
+            Connection lost — retrying…
+          </p>
+        )}
       </div>
     );
   }

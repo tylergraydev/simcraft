@@ -210,7 +210,7 @@ export default function SimResultClient() {
           href={`${API_URL}/api/sim/${id}/raw`}
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-white transition-colors"
+          className="hover:text-fg transition-colors"
         >
           View raw JSON
         </a>

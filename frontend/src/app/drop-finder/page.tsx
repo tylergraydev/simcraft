@@ -46,7 +46,7 @@ interface DropItem {
 }
 
 const QUALITY_COLORS: Record<number, string> = {
-  1: "text-gray-400",
+  1: "text-fg-muted",
   2: "text-green-400",
   3: "text-blue-400",
   4: "text-purple-400",
@@ -576,7 +576,7 @@ export default function DropFinderPage() {
                         target="_blank"
                         rel="noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className={`text-[12px] font-medium ${QUALITY_COLORS[resolveUpgrade(item, difficulty, dungeonDiff, upgradeLevel, upgradeTracks).quality] || "text-gray-400"}`}
+                        className={`text-[12px] font-medium ${QUALITY_COLORS[resolveUpgrade(item, difficulty, dungeonDiff, upgradeLevel, upgradeTracks).quality] || "text-fg-muted"}`}
                       >
                         {item.name}
                       </a>

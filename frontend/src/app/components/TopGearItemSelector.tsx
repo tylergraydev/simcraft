@@ -332,7 +332,7 @@ export default function TopGearItemSelector({
             comboCount > 500
               ? "bg-red-500/10 text-red-400"
               : comboCount > 0
-              ? "bg-surface-2 text-white"
+              ? "bg-surface-2 text-fg"
               : "bg-surface-2 text-muted"
           }`}
         >
@@ -351,8 +351,8 @@ export default function TopGearItemSelector({
               const info =
                 di.item.item_id > 0 ? itemInfoMap[di.item.item_id] : null;
               const qc = info
-                ? QUALITY_COLORS[info.quality] || "#fff"
-                : "#fff";
+                ? QUALITY_COLORS[info.quality] || "var(--color-text-primary)"
+                : "var(--color-text-primary)";
               const name =
                 info?.name || di.item.name || `Item ${di.item.item_id}`;
               const icon = info?.icon || "inv_misc_questionmark";
@@ -360,11 +360,11 @@ export default function TopGearItemSelector({
               return (
                 <div
                   key={`eq-${eqIdx}`}
-                  className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-white/[0.03]"
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-fg/[0.03]"
                 >
-                  <div className="w-4 h-4 rounded-[3px] bg-white/10 flex items-center justify-center shrink-0">
+                  <div className="w-4 h-4 rounded-[3px] bg-fg/10 flex items-center justify-center shrink-0">
                     <svg
-                      className="w-2.5 h-2.5 text-white/40"
+                      className="w-2.5 h-2.5 text-fg/40"
                       viewBox="0 0 16 16"
                       fill="none"
                     >
@@ -377,7 +377,7 @@ export default function TopGearItemSelector({
                       />
                     </svg>
                   </div>
-                  <div className="w-6 h-6 shrink-0 rounded overflow-hidden ring-1 ring-white/5">
+                  <div className="w-6 h-6 shrink-0 rounded overflow-hidden ring-1 ring-fg/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={getIconUrl(icon)}
@@ -417,8 +417,8 @@ export default function TopGearItemSelector({
               const info =
                 di.item.item_id > 0 ? itemInfoMap[di.item.item_id] : null;
               const qc = info
-                ? QUALITY_COLORS[info.quality] || "#fff"
-                : "#fff";
+                ? QUALITY_COLORS[info.quality] || "var(--color-text-primary)"
+                : "var(--color-text-primary)";
               const name =
                 info?.name || di.item.name || `Item ${di.item.item_id}`;
               const icon = info?.icon || "inv_misc_questionmark";
@@ -429,7 +429,7 @@ export default function TopGearItemSelector({
                   className={`flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer transition-colors group ${
                     checked
                       ? "bg-gold/[0.07]"
-                      : "hover:bg-white/[0.02]"
+                      : "hover:bg-fg/[0.02]"
                   }`}
                 >
                   <input
@@ -442,7 +442,7 @@ export default function TopGearItemSelector({
                     className={`w-4 h-4 rounded-[3px] border transition-all shrink-0 flex items-center justify-center ${
                       checked
                         ? "bg-gold border-gold"
-                        : "border-gray-600 group-hover:border-gray-500"
+                        : "border-border group-hover:border-border-light"
                     }`}
                   >
                     {checked && (
@@ -461,7 +461,7 @@ export default function TopGearItemSelector({
                       </svg>
                     )}
                   </div>
-                  <div className="w-6 h-6 shrink-0 rounded overflow-hidden ring-1 ring-white/5">
+                  <div className="w-6 h-6 shrink-0 rounded overflow-hidden ring-1 ring-fg/5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={getIconUrl(icon)}
@@ -587,7 +587,7 @@ function ItemDetails({
                     className={`w-full text-left px-3 py-1.5 text-[11px] flex items-center justify-between gap-2 ${
                       isCurrent
                         ? "text-muted cursor-default"
-                        : "text-fg-muted hover:bg-white/[0.05] hover:text-fg"
+                        : "text-fg-muted hover:bg-fg/[0.05] hover:text-fg"
                     }`}
                   >
                     <span>{opt.fullName}</span>
@@ -605,7 +605,7 @@ function ItemDetails({
             type="button"
             onClick={(e) => { e.stopPropagation(); e.preventDefault(); onUpgradeClick(); }}
             className={`w-5 h-5 rounded flex items-center justify-center transition-colors ${
-              isMenuOpen ? "bg-gold/20 text-gold" : "text-muted hover:text-fg-muted hover:bg-white/[0.05]"
+              isMenuOpen ? "bg-gold/20 text-gold" : "text-muted hover:text-fg-muted hover:bg-fg/[0.05]"
             }`}
             title="Add copy at different upgrade level"
           >

@@ -154,7 +154,7 @@ export default function TopGearResults({
         </p>
         {bestResult && bestResult.delta > 0 ? (
           <>
-            <p className="text-5xl font-bold text-white tabular-nums tracking-tight">
+            <p className="text-5xl font-bold text-fg tabular-nums tracking-tight">
               {Math.round(bestResult.dps).toLocaleString()}
             </p>
             <p className="text-xs text-muted mt-2 uppercase tracking-widest">
@@ -169,7 +169,7 @@ export default function TopGearResults({
           </>
         ) : (
           <>
-            <p className="text-5xl font-bold text-white tabular-nums tracking-tight">
+            <p className="text-5xl font-bold text-fg tabular-nums tracking-tight">
               {Math.round(baseDps).toLocaleString()}
             </p>
             <p className="text-xs text-muted mt-2 uppercase tracking-widest">
@@ -434,7 +434,7 @@ function GearSlotRow({
   if (!item || item.item_id <= 0) {
     return (
       <div className="flex items-center gap-2 rounded-lg px-2 py-1.5">
-        <div className="w-7 h-7 shrink-0 rounded bg-white/[0.03] border border-border" />
+        <div className="w-7 h-7 shrink-0 rounded bg-fg/[0.03] border border-border" />
         <div>
           <p className="text-[11px] text-muted">{SLOT_LABELS[slot] || slot}</p>
           <p className="text-[9px] text-muted/60">Empty</p>
@@ -446,7 +446,7 @@ function GearSlotRow({
   const info = itemInfoMap[item.item_id];
   const enchant = item.enchant_id ? enchantInfoMap[item.enchant_id] : undefined;
   const gem = item.gem_id ? gemInfoMap[item.gem_id] : undefined;
-  const qc = info ? QUALITY_COLORS[info.quality] || "#fff" : "#fff";
+  const qc = info ? QUALITY_COLORS[info.quality] || "var(--color-text-primary)" : "var(--color-text-primary)";
   const name = info?.name || item.name || `Item ${item.item_id}`;
   const icon = info?.icon || "inv_misc_questionmark";
   const whData = item.item_id > 0 ? getWowheadData(item.bonus_ids, item.ilevel, item.enchant_id, item.gem_id) : undefined;
@@ -500,7 +500,7 @@ function GearSlotRow({
 }
 
 function ItemTag({ item, info, enchant, gem }: { item: ResultItem; info?: ItemInfo; enchant?: EnchantInfo; gem?: GemInfo }) {
-  const qc = info ? QUALITY_COLORS[info.quality] || "#fff" : "#fff";
+  const qc = info ? QUALITY_COLORS[info.quality] || "var(--color-text-primary)" : "var(--color-text-primary)";
   const name = info?.name || item.name || `Item ${item.item_id}`;
   const icon = info?.icon || "inv_misc_questionmark";
   const kept = item.is_kept;
@@ -509,7 +509,7 @@ function ItemTag({ item, info, enchant, gem }: { item: ResultItem; info?: ItemIn
   return (
     <div
       className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 ${
-        kept ? "opacity-40" : "bg-white/[0.04]"
+        kept ? "opacity-40" : "bg-fg/[0.04]"
       }`}
     >
       <div className="w-4 h-4 shrink-0 rounded-sm overflow-hidden">

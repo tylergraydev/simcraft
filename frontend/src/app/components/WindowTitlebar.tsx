@@ -38,10 +38,10 @@ export default function WindowControls() {
           onClick={() => windowAction("minimize")}
           onMouseEnter={() => setHovered("min")}
           onMouseLeave={() => setHovered(null)}
-          className="w-7 h-7 flex items-center justify-center rounded-md transition-all duration-150 hover:bg-white/[0.08]"
+          className="w-7 h-7 flex items-center justify-center rounded-md transition-all duration-150 hover:bg-fg/[0.08]"
         >
           <div className={`w-2.5 h-[1.5px] rounded-full transition-colors duration-150 ${
-            hovered === "min" ? "bg-gray-300" : "bg-gray-600"
+            hovered === "min" ? "bg-fg" : "bg-muted"
           }`} />
         </button>
 
@@ -49,18 +49,18 @@ export default function WindowControls() {
           onClick={() => windowAction("toggleMaximize")}
           onMouseEnter={() => setHovered("max")}
           onMouseLeave={() => setHovered(null)}
-          className="w-7 h-7 flex items-center justify-center rounded-md transition-all duration-150 hover:bg-white/[0.08]"
+          className="w-7 h-7 flex items-center justify-center rounded-md transition-all duration-150 hover:bg-fg/[0.08]"
         >
           {isMaximized ? (
             <svg className={`w-[10px] h-[10px] transition-colors duration-150 ${
-              hovered === "max" ? "text-gray-300" : "text-gray-600"
+              hovered === "max" ? "text-fg" : "text-muted"
             }`} viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.2">
               <path d="M2.5 3.5h4v4h-4z" />
               <path d="M3.5 3.5V2.5h4v4h-1" />
             </svg>
           ) : (
             <svg className={`w-[10px] h-[10px] transition-colors duration-150 ${
-              hovered === "max" ? "text-gray-300" : "text-gray-600"
+              hovered === "max" ? "text-fg" : "text-muted"
             }`} viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.2">
               <rect x="1.5" y="1.5" width="7" height="7" rx="0.5" />
             </svg>
@@ -72,11 +72,11 @@ export default function WindowControls() {
           onMouseEnter={() => setHovered("close")}
           onMouseLeave={() => setHovered(null)}
           className={`w-7 h-7 flex items-center justify-center rounded-md transition-all duration-150 ${
-            hovered === "close" ? "bg-red-500/90" : "hover:bg-white/[0.08]"
+            hovered === "close" ? "bg-red-500/90" : "hover:bg-fg/[0.08]"
           }`}
         >
           <svg className={`w-[10px] h-[10px] transition-colors duration-150 ${
-            hovered === "close" ? "text-white" : "text-gray-600"
+            hovered === "close" ? "text-white" : "text-muted"
           }`} viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
             <path d="M2 2l6 6M8 2l-6 6" />
           </svg>

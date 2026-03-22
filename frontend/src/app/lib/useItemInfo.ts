@@ -29,7 +29,7 @@ function cacheKey(item_id: number, bonus_ids?: number[]): string {
 
 export const QUALITY_COLORS: Record<number, string> = {
   0: "#9d9d9d", // Poor
-  1: "#ffffff", // Common
+  1: "var(--color-text-primary)", // Common — theme-aware
   2: "#1eff00", // Uncommon
   3: "#0070dd", // Rare
   4: "#a335ee", // Epic

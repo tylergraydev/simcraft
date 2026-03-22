@@ -43,7 +43,7 @@ export default function ResultsChart({
         <p className="text-xs text-muted mb-4">
           {playerName} &middot; {playerClass}
         </p>
-        <p className="text-5xl font-bold text-white tabular-nums tracking-tight">
+        <p className="text-5xl font-bold text-fg tabular-nums tracking-tight">
           {Math.round(dps).toLocaleString()}
         </p>
         <p className="text-xs text-muted mt-2 uppercase tracking-widest">DPS</p>

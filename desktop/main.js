@@ -152,7 +152,7 @@ function setupAutoUpdater() {
     ipcMain.handle("updater:check", async () => {
       try {
         const result = await autoUpdater.checkForUpdates();
-        if (result?.updateInfo) {
+        if (result?.updateInfo && result.updateInfo.version !== app.getVersion()) {
           return { version: result.updateInfo.version };
         }
         return null;
@@ -163,7 +163,9 @@ function setupAutoUpdater() {
 
     ipcMain.handle("updater:downloadAndInstall", async () => {
       await autoUpdater.downloadUpdate();
-      autoUpdater.quitAndInstall();
+      // Defer quitAndInstall so the IPC response can return first,
+      // otherwise the app gets stuck mid-quit while the renderer awaits the reply.
+      setImmediate(() => autoUpdater.quitAndInstall(false, true));
     });
 
     // Check for updates after a short delay

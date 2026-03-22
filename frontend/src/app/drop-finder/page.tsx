@@ -284,7 +284,7 @@ export default function DropFinderPage() {
               </svg>
             </div>
             <p className={`text-[13px] font-semibold transition-colors ${
-              category === cat.key ? "text-gold" : "text-white"
+              category === cat.key ? "text-gold" : "text-fg"
             }`}>
               {cat.label}
             </p>
@@ -308,8 +308,8 @@ export default function DropFinderPage() {
               }}
               className={`px-4 py-2 rounded-lg text-[13px] font-medium transition-all border ${
                 selectedId === "type:raid" || selectedId === "type:dungeon"
-                  ? "bg-white text-black border-white"
-                  : "bg-surface-2 text-gray-400 border-border hover:border-gray-500 hover:text-white"
+                  ? "bg-gold/10 text-gold border-gold"
+                  : "bg-surface-2 text-fg-muted border-border hover:border-muted hover:text-fg"
               }`}
             >
               All {category === "raids" ? "Raids" : "Dungeons"}
@@ -325,8 +325,8 @@ export default function DropFinderPage() {
                 onClick={() => setSelectedId(String(inst.id))}
                 className={`px-4 py-2 rounded-lg text-[13px] font-medium transition-all border ${
                   selectedId === String(inst.id)
-                    ? "bg-white text-black border-white"
-                    : "bg-surface-2 text-gray-400 border-border hover:border-gray-500 hover:text-white"
+                    ? "bg-gold/10 text-gold border-gold"
+                    : "bg-surface-2 text-fg-muted border-border hover:border-muted hover:text-fg"
                 }`}
               >
                 {inst.name}
@@ -347,8 +347,8 @@ export default function DropFinderPage() {
                 onClick={() => setDifficulty(d.value)}
                 className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all border ${
                   difficulty === d.value
-                    ? "bg-white text-black border-white"
-                    : "bg-surface-2 text-gray-400 border-border hover:border-gray-500 hover:text-white"
+                    ? "bg-gold/10 text-gold border-gold"
+                    : "bg-surface-2 text-fg-muted border-border hover:border-muted hover:text-fg"
                 }`}
               >
                 {d.label}
@@ -369,8 +369,8 @@ export default function DropFinderPage() {
                 onClick={() => setDungeonDiff(d.value)}
                 className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all border ${
                   dungeonDiff === d.value
-                    ? "bg-white text-black border-white"
-                    : "bg-surface-2 text-gray-400 border-border hover:border-gray-500 hover:text-white"
+                    ? "bg-gold/10 text-gold border-gold"
+                    : "bg-surface-2 text-fg-muted border-border hover:border-muted hover:text-fg"
                 }`}
               >
                 {d.label}
@@ -424,13 +424,13 @@ export default function DropFinderPage() {
             <div className="flex gap-2">
               <button
                 onClick={selectAll}
-                className="text-[11px] text-gray-500 hover:text-white transition-colors"
+                className="text-[11px] text-muted hover:text-fg transition-colors"
               >
                 Select all
               </button>
               <button
                 onClick={selectNone}
-                className="text-[11px] text-gray-500 hover:text-white transition-colors"
+                className="text-[11px] text-muted hover:text-fg transition-colors"
               >
                 Clear
               </button>
@@ -441,7 +441,7 @@ export default function DropFinderPage() {
             <div key={slot} className="card p-4">
               <h3 className="text-[11px] font-semibold text-muted uppercase tracking-widest mb-3">
                 {slot}
-                <span className="text-gray-600 ml-1.5 normal-case tracking-normal font-normal">
+                <span className="text-muted ml-1.5 normal-case tracking-normal font-normal">
                   ({items.length})
                 </span>
               </h3>
@@ -455,7 +455,7 @@ export default function DropFinderPage() {
                       className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all border ${
                         isSelected
                           ? "bg-gold/10 border-gold/40"
-                          : "bg-surface-2 border-border hover:border-gray-500"
+                          : "bg-surface-2 border-border hover:border-muted"
                       }`}
                     >
                       <img
@@ -475,7 +475,7 @@ export default function DropFinderPage() {
                       >
                         {item.name}
                       </a>
-                      <span className="text-[11px] text-gray-600 tabular-nums">
+                      <span className="text-[11px] text-muted tabular-nums">
                         {effectiveIlvl(item, difficulty, dungeonDiff)}
                       </span>
                     </button>
@@ -523,7 +523,7 @@ export default function DropFinderPage() {
           <p className="text-sm text-red-400">{instanceError}</p>
           <button
             onClick={fetchInstances}
-            className="px-4 py-2 text-xs font-medium text-white bg-surface-2 border border-border rounded-lg hover:border-gray-500 transition-colors"
+            className="px-4 py-2 text-xs font-medium text-fg bg-surface-2 border border-border rounded-lg hover:border-muted transition-colors"
           >
             Retry
           </button>

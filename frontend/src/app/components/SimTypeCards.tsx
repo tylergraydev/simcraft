@@ -67,7 +67,7 @@ export default function SimTypeCards() {
               </div>
               <div>
                 <h2 className={`text-[15px] font-semibold transition-colors ${
-                  isActive ? "text-gold" : "text-white group-hover:text-gold"
+                  isActive ? "text-gold" : "text-fg group-hover:text-gold"
                 }`}>
                   {sim.label}
                 </h2>

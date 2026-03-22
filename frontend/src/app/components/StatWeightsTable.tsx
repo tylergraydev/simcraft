@@ -37,8 +37,8 @@ export default function StatWeightsTable({
         {entries.map(({ stat, weight }) => (
           <div key={stat}>
             <div className="flex justify-between text-[13px] mb-1.5">
-              <span className="text-gray-300">{stat}</span>
-              <span className="text-white font-mono tabular-nums">
+              <span className="text-fg-muted">{stat}</span>
+              <span className="text-fg font-mono tabular-nums">
                 {weight.toFixed(4)}
               </span>
             </div>

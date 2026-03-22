@@ -5,15 +5,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        gold: "#D4A843",
-        "gold-light": "#E4BE6A",
-        "gold-dark": "#B08930",
-        bg: "#0a0a0b",
-        surface: "#141416",
-        "surface-2": "#1c1c1f",
-        border: "#2a2a2e",
-        "border-light": "#363639",
-        muted: "#71717a",
+        gold: "var(--color-gold)",
+        "gold-light": "var(--color-gold-light)",
+        "gold-dark": "var(--color-gold-dark)",
+        bg: "var(--color-bg)",
+        surface: "var(--color-surface)",
+        "surface-2": "var(--color-surface-2)",
+        border: "var(--color-border)",
+        "border-light": "var(--color-border-light)",
+        muted: "var(--color-muted)",
+        fg: "var(--color-text-primary)",
+        "fg-muted": "var(--color-text-secondary)",
       },
       fontFamily: {
         sans: [

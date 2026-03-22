@@ -47,7 +47,7 @@ export default function ResultsChart({
           {Math.round(dps).toLocaleString()}
         </p>
         <p className="text-xs text-muted mt-2 uppercase tracking-widest">DPS</p>
-        <div className="flex items-center justify-center gap-4 mt-3 text-xs text-gray-600">
+        <div className="flex items-center justify-center gap-4 mt-3 text-xs text-muted">
           <span>&plusmn; {Math.round(dpsError).toLocaleString()}</span>
           <span className="w-px h-3 bg-border" />
           <span>{fightLength}s fight</span>
@@ -78,13 +78,13 @@ export default function ResultsChart({
                   style={{ backgroundColor: color, opacity: 0.6 }}
                 />
                 {/* Content */}
-                <span className="relative pl-3 text-[12px] text-gray-300 truncate flex-1">
+                <span className="relative pl-3 text-[12px] text-fg-muted truncate flex-1">
                   {name}
                 </span>
-                <span className="relative text-[11px] font-mono tabular-nums text-gray-500 w-16 text-right shrink-0">
+                <span className="relative text-[11px] font-mono tabular-nums text-muted w-16 text-right shrink-0">
                   {Math.round(a.portion_dps).toLocaleString()}
                 </span>
-                <span className="relative text-[11px] font-mono tabular-nums text-gray-500 w-12 text-right shrink-0">
+                <span className="relative text-[11px] font-mono tabular-nums text-muted w-12 text-right shrink-0">
                   {pct.toFixed(1)}%
                 </span>
               </div>

@@ -4,36 +4,172 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== Theme Definitions ===== */
+
+/* Dark (default) — the original SimHammer palette */
+:root,
+[data-theme="dark"] {
+  --color-gold: #D4A843;
+  --color-gold-light: #E4BE6A;
+  --color-gold-dark: #B08930;
+  --color-bg: #0a0a0b;
+  --color-surface: #141416;
+  --color-surface-2: #1c1c1f;
+  --color-border: #2a2a2e;
+  --color-border-light: #363639;
+  --color-muted: #71717a;
+  --color-text-primary: #e5e5e5;
+  --color-text-secondary: #a1a1aa;
+  --color-scrollbar: #2a2a2e;
+  --color-scrollbar-hover: #404044;
+  --color-select-arrow: %2371717a;
+  --color-btn-text: #000;
+  --color-scheme: dark;
+  color-scheme: dark;
+}
+
+/* Midnight — deeper blues, cooler tones */
+[data-theme="midnight"] {
+  --color-gold: #7C9FE8;
+  --color-gold-light: #9DB8F0;
+  --color-gold-dark: #5A7DC4;
+  --color-bg: #0b0e17;
+  --color-surface: #111827;
+  --color-surface-2: #1a2236;
+  --color-border: #253047;
+  --color-border-light: #334266;
+  --color-muted: #6B7FA3;
+  --color-text-primary: #e0e7f5;
+  --color-text-secondary: #94a3c4;
+  --color-scrollbar: #253047;
+  --color-scrollbar-hover: #334266;
+  --color-select-arrow: %236B7FA3;
+  --color-btn-text: #000;
+  --color-scheme: dark;
+  color-scheme: dark;
+}
+
+/* Shadowforge — warm dark with ember/forge accents */
+[data-theme="shadowforge"] {
+  --color-gold: #E8734A;
+  --color-gold-light: #F09070;
+  --color-gold-dark: #C45A32;
+  --color-bg: #0f0a08;
+  --color-surface: #1a1210;
+  --color-surface-2: #241a16;
+  --color-border: #3a2820;
+  --color-border-light: #4d3830;
+  --color-muted: #8a7068;
+  --color-text-primary: #f0e0d8;
+  --color-text-secondary: #b8a098;
+  --color-scrollbar: #3a2820;
+  --color-scrollbar-hover: #4d3830;
+  --color-select-arrow: %238a7068;
+  --color-btn-text: #000;
+  --color-scheme: dark;
+  color-scheme: dark;
+}
+
+/* Light — clean light theme */
+[data-theme="light"] {
+  --color-gold: #B08930;
+  --color-gold-light: #C49E48;
+  --color-gold-dark: #97741A;
+  --color-bg: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-surface-2: #f0f0f0;
+  --color-border: #d4d4d8;
+  --color-border-light: #e4e4e7;
+  --color-muted: #71717a;
+  --color-text-primary: #18181b;
+  --color-text-secondary: #52525b;
+  --color-scrollbar: #d4d4d8;
+  --color-scrollbar-hover: #a1a1aa;
+  --color-select-arrow: %2371717a;
+  --color-btn-text: #fff;
+  --color-scheme: light;
+  color-scheme: light;
+}
+
+/* Parchment — warm light with aged/tan tones */
+[data-theme="parchment"] {
+  --color-gold: #A07840;
+  --color-gold-light: #B89058;
+  --color-gold-dark: #886028;
+  --color-bg: #f5f0e8;
+  --color-surface: #faf6ef;
+  --color-surface-2: #ede8de;
+  --color-border: #d4c9b8;
+  --color-border-light: #e2d8c8;
+  --color-muted: #8a7d6e;
+  --color-text-primary: #2c2416;
+  --color-text-secondary: #5c5040;
+  --color-scrollbar: #d4c9b8;
+  --color-scrollbar-hover: #b8a890;
+  --color-select-arrow: %238a7d6e;
+  --color-btn-text: #fff;
+  --color-scheme: light;
+  color-scheme: light;
+}
+
+/* Frost — cool light with icy blue accents */
+[data-theme="frost"] {
+  --color-gold: #3B82C8;
+  --color-gold-light: #5A9ADB;
+  --color-gold-dark: #2968A8;
+  --color-bg: #f0f4f8;
+  --color-surface: #f8fafc;
+  --color-surface-2: #e8eef4;
+  --color-border: #c8d6e4;
+  --color-border-light: #dae4ee;
+  --color-muted: #6882a0;
+  --color-text-primary: #0f1c2e;
+  --color-text-secondary: #3e5068;
+  --color-scrollbar: #c8d6e4;
+  --color-scrollbar-hover: #a0b4c8;
+  --color-select-arrow: %236882a0;
+  --color-btn-text: #fff;
+  --color-scheme: light;
+  color-scheme: light;
+}
+
+/* ===== Base ===== */
+
 @layer base {
   body {
-    @apply bg-bg text-gray-200 antialiased;
+    @apply bg-bg text-fg antialiased;
   }
   ::selection {
-    @apply bg-gold/20 text-white;
+    background: color-mix(in srgb, var(--color-gold) 20%, transparent);
+    @apply text-fg;
   }
 }
+
+/* ===== Components ===== */
 
 @layer components {
   .card {
     @apply bg-surface border border-border rounded-xl;
   }
   .btn-primary {
-    @apply py-2.5 px-5 bg-gold hover:bg-gold-light text-black font-semibold
+    @apply py-2.5 px-5 bg-gold hover:bg-gold-light font-semibold
            rounded-lg transition-all duration-150 active:scale-[0.98]
            disabled:bg-border disabled:text-muted disabled:pointer-events-none;
+    color: var(--color-btn-text);
   }
   .btn-outline {
-    @apply py-2.5 px-5 bg-transparent border border-border text-gray-300
-           hover:border-gray-500 hover:text-white rounded-lg transition-all duration-150
+    @apply py-2.5 px-5 bg-transparent border border-border text-fg-muted
+           hover:border-gold-dark hover:text-fg rounded-lg transition-all duration-150
            active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none;
   }
   .input-field {
     @apply w-full bg-surface-2 border border-border rounded-lg px-3.5 py-2.5
-           text-sm text-gray-100 placeholder-gray-500 transition-all
-           focus:outline-none focus:border-gray-500 focus:ring-2 focus:ring-white/5;
+           text-sm text-fg placeholder-muted transition-all
+           focus:outline-none focus:border-muted focus:ring-2;
+    --tw-ring-color: color-mix(in srgb, var(--color-gold) 10%, transparent);
   }
   .label-text {
-    @apply block text-[13px] font-medium text-gray-400 mb-2;
+    @apply block text-[13px] font-medium text-fg-muted mb-2;
   }
 }
 
@@ -49,13 +185,13 @@ html[data-desktop] .desktop-no-drag { -webkit-app-region: no-drag; }
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2a2a2e; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #404044; }
+::-webkit-scrollbar-thumb { background: var(--color-scrollbar); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-scrollbar-hover); }
 
 /* Select dropdown arrow */
 select.input-field {
   @apply pr-8 bg-no-repeat;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='var(--color-select-arrow)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-position: right 10px center;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -76,26 +212,30 @@ input[type="range"]::-moz-range-track {
 /* Range slider - thumb */
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  @apply w-4 h-4 rounded-full bg-gold border-[3px] border-surface cursor-grab
-         -mt-[5px] shadow-[0_0_0_2px_rgba(212,168,67,0.3)];
+  @apply w-4 h-4 rounded-full bg-gold border-[3px] border-surface cursor-grab -mt-[5px];
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-gold) 30%, transparent);
   transition: box-shadow 0.15s, background-color 0.15s;
 }
 input[type="range"]::-moz-range-thumb {
-  @apply w-4 h-4 rounded-full bg-gold border-[3px] border-surface cursor-grab
-         shadow-[0_0_0_2px_rgba(212,168,67,0.3)];
+  @apply w-4 h-4 rounded-full bg-gold border-[3px] border-surface cursor-grab;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-gold) 30%, transparent);
   transition: box-shadow 0.15s, background-color 0.15s;
 }
 input[type="range"]::-webkit-slider-thumb:hover {
-  @apply bg-gold-light shadow-[0_0_0_4px_rgba(212,168,67,0.2)];
+  @apply bg-gold-light;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-gold) 20%, transparent);
 }
 input[type="range"]::-moz-range-thumb:hover {
-  @apply bg-gold-light shadow-[0_0_0_4px_rgba(212,168,67,0.2)];
+  @apply bg-gold-light;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-gold) 20%, transparent);
 }
 input[type="range"]:active::-webkit-slider-thumb {
-  @apply cursor-grabbing shadow-[0_0_0_5px_rgba(212,168,67,0.25)];
+  @apply cursor-grabbing;
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-gold) 25%, transparent);
 }
 input[type="range"]:active::-moz-range-thumb {
-  @apply cursor-grabbing shadow-[0_0_0_5px_rgba(212,168,67,0.25)];
+  @apply cursor-grabbing;
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-gold) 25%, transparent);
 }
 input[type="range"]:focus-visible {
   @apply outline-none;

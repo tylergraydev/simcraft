@@ -247,7 +247,7 @@ export default function TopGearResults({
                 />
                 <div className="relative flex items-center justify-between px-3 py-2 gap-3">
                   <div className="flex items-center gap-2 min-w-0 flex-1">
-                    <span className="text-[10px] font-mono text-gray-600 w-5 text-right shrink-0 tabular-nums">
+                    <span className="text-[10px] font-mono text-muted w-5 text-right shrink-0 tabular-nums">
                       {idx + 1}
                     </span>
 
@@ -305,7 +305,7 @@ export default function TopGearResults({
                         ? Math.round(result.delta).toLocaleString()
                         : "—"}
                     </span>
-                    <span className="text-[12px] font-mono text-gray-400 tabular-nums w-16 text-right">
+                    <span className="text-[12px] font-mono text-fg-muted tabular-nums w-16 text-right">
                       {Math.round(result.dps).toLocaleString()}
                     </span>
                   </div>
@@ -339,8 +339,8 @@ function GearSlotRow({
       <div className="flex items-center gap-2 rounded-lg px-2 py-1.5">
         <div className="w-7 h-7 shrink-0 rounded bg-white/[0.03] border border-border" />
         <div>
-          <p className="text-[11px] text-gray-600">{SLOT_LABELS[slot] || slot}</p>
-          <p className="text-[9px] text-gray-700">Empty</p>
+          <p className="text-[11px] text-muted">{SLOT_LABELS[slot] || slot}</p>
+          <p className="text-[9px] text-muted/60">Empty</p>
         </div>
       </div>
     );

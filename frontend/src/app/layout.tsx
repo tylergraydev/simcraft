@@ -25,7 +25,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `if(window.electronAPI)document.documentElement.setAttribute("data-desktop","")`,
+            __html: `if(window.electronAPI)document.documentElement.setAttribute("data-desktop","");try{var t=localStorage.getItem("simhammer_theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}`,
           }}
         />
         <Script
@@ -48,7 +48,7 @@ export default function RootLayout({
                     <path d="M3 2l10 6-10 6V2z" />
                   </svg>
                 </div>
-                <span className="text-sm font-semibold text-gray-200 group-hover:text-white transition-colors">
+                <span className="text-sm font-semibold text-fg-muted group-hover:text-fg transition-colors">
                   SimHammer
                 </span>
               </a>
@@ -66,12 +66,12 @@ export default function RootLayout({
           </main>
         </SimProvider>
         <footer className="border-t border-border/50 mt-16 py-6">
-          <p className="text-center text-[11px] text-gray-500 max-w-lg mx-auto leading-relaxed">
+          <p className="text-center text-[11px] text-muted max-w-lg mx-auto leading-relaxed">
             SimHammer is a pet project held together by coffee, duct tape, and prayers to the RNG gods.
             Bugs are not features — but they might sim higher than your gear. Use at your own risk.
             Not affiliated with Blizzard, Raidbots, or anyone who knows what they&apos;re doing.
           </p>
-          <p className="text-center text-[11px] text-gray-600 mt-2">v1.0.0</p>
+          <p className="text-center text-[11px] text-muted/60 mt-2">v1.0.0</p>
         </footer>
       </body>
     </html>

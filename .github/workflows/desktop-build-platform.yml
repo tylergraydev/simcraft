@@ -41,12 +41,31 @@ jobs:
           restore-keys: ${{ runner.os }}-cargo-
 
       # -- SimC --
+      - name: Resolve SimC version
+        id: simc-version
+        shell: bash
+        run: |
+          if [ "$SIMC_VERSION" = "HEAD" ]; then
+            HASH=$(git ls-remote https://github.com/simulationcraft/simc.git HEAD | cut -f1)
+          else
+            HASH="$SIMC_VERSION"
+          fi
+          echo "hash=$HASH" >> "$GITHUB_OUTPUT"
+
+      - name: Cache SimC binary
+        id: simc-cache
+        uses: actions/cache@v4
+        with:
+          path: backend/resources/simc
+          key: ${{ runner.os }}-simc-${{ steps.simc-version.outputs.hash }}
+
       - name: Clone SimC
+        if: steps.simc-cache.outputs.cache-hit != 'true'
         shell: bash
         run: git clone --depth 1 https://github.com/simulationcraft/simc.git "${{ runner.temp }}/simc"
 
       - name: Build SimC (Windows)
-        if: inputs.platform == 'windows'
+        if: steps.simc-cache.outputs.cache-hit != 'true' && inputs.platform == 'windows'
         shell: cmd
         run: |
           cd "${{ runner.temp }}\simc"
@@ -54,13 +73,14 @@ jobs:
           cmake --build build --config Release --target simc
 
       - name: Build SimC (Unix)
-        if: inputs.platform != 'windows'
+        if: steps.simc-cache.outputs.cache-hit != 'true' && inputs.platform != 'windows'
         shell: bash
         run: |
           cd "${{ runner.temp }}/simc/engine"
           make LTO=1 NO_DEBUG=1 SC_NO_NETWORKING=1 -j$(nproc 2>/dev/null || sysctl -n hw.ncpu) OPTS="-ffast-math -fomit-frame-pointer"
 
       - name: Install SimC binary
+        if: steps.simc-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           mkdir -p backend/resources/simc

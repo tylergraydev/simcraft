@@ -127,6 +127,7 @@ export default function SimResultClient() {
                 enchant_id?: number;
                 gem_id?: number;
                 is_kept?: boolean;
+                encounter?: string;
               }>;
               dps: number;
               delta: number;
